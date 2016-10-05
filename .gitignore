@@ -1,0 +1,7 @@
+### Gradle ###
+.gradle
+/build/
+
+.idea
+
+docker/spring-boot-dummy*
