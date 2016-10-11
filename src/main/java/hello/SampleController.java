@@ -15,6 +15,12 @@ public class SampleController {
         return "Hello World!";
     }
 
+    @RequestMapping("/json")
+    @ResponseBody
+    String json() {
+        return "{\"greeting\": \"Hello World!\"}";
+    }
+
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleController.class, args);
     }
