@@ -1,11 +1,17 @@
+echo "Branch name: ${BRANCH_NAME}"
+BUILD = BRANCH_NAME == 'master' ? 'latest' : BRANCH_NAME
+echo "Build: ${BUILD}"
+
 node ('master') {
     checkout scm
+    echo "Build: ${BUILD}"
     stage ('Build Building container') {
-        sh 'sudo docker build -t laszlocph/build-spring-boot-dummy .'
+        echo "Build: ${BUILD}"
+        sh "sudo docker build -t laszlocph/build-spring-boot-dummy:${BUILD} ."
     }
     stage ('Build in Container') {
         def CONTAINER_ID = sh (
-                script: "sudo docker run -d --network=host laszlocph/build-spring-boot-dummy",
+                script: "sudo docker run -d --network=host laszlocph/build-spring-boot-dummy:${BUILD}",
                 returnStdout: true
         ).trim()
         echo "Container id: ${CONTAINER_ID}"
@@ -18,7 +24,8 @@ node ('master') {
 
     stage ('Build Container with latest Build') {
         dir('docker') {
-            sh 'sudo docker build -t laszlocph/spring-boot-dummy:latest .'
+            sh "sudo docker build -t laszlocph/spring-boot-dummy:${BUILD} ."
+            sh "sudo docker push laszlocph/spring-boot-dummy:${BUILD}"
         }
     }
 }
